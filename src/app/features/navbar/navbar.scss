@@ -1,0 +1,16 @@
+.spacer {
+  flex: 1 1 auto;  /* pushes content to right */
+}
+
+.primary {
+    background-color: blueviolet;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure the navbar is above other content */
+    margin-bottom: 20px;
+}

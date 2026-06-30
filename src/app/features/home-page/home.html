@@ -1,0 +1,56 @@
+<app-navbar></app-navbar>
+<div class="dashboard">
+    <div class="page-header">
+        <div>
+            <h1>Dashboard</h1>
+            <p class="subtitle">{{ today }}</p>
+        </div>
+        <button mat-flat-button color="primary" (click)="onNewTaskClick()">
+            <mat-icon>add</mat-icon> New task
+        </button>
+    </div>
+
+    <div class="task-status">
+        <div><span class="stat-label">Total</span>
+            <span class="stat-value">{{ taskService.totalCount() }}</span>
+        </div>
+
+        <div><span class="stat-label">In progress</span>
+            <span class="stat-value accent">{{ taskService.inProgressCount() }}</span>
+        </div>
+
+        <div><span class="stat-label">Done</span>
+            <span class="stat-value success">{{ taskService.doneCount() }}</span>
+        </div>
+
+        <div><span class="stat-label">Todo</span>
+            <span class="stat-value danger">{{ taskService.todoCount() }}</span>
+        </div>
+    </div>
+
+    <!-- ✦ Filter chips -->
+    <div class="filter-group">
+        <mat-button-toggle-group [value]="taskService.activeFilter()" (change)="onFilterChange($event.value)">
+            <mat-button-toggle value="all">All</mat-button-toggle>
+            <mat-button-toggle value="todo">Todo</mat-button-toggle>
+            <mat-button-toggle value="in-progress">In progress</mat-button-toggle>
+            <mat-button-toggle value="done">Done</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+
+    <!-- ✦ Task list — @for and @if (new Angular control flow) -->
+  <div class="task-list">
+    @if (taskService.filteredTasks().length === 0) {
+      <div class="empty-state">
+        <mat-icon>check_circle</mat-icon>
+        <p>No tasks here!</p>
+      </div>
+    } @else {
+      @for (task of taskService.filteredTasks(); track task.id) {
+        <app-task-card
+          [task]="task"
+          (taskClicked)="onTaskClicked($event)" />
+      }
+    }
+  </div>
+</div>

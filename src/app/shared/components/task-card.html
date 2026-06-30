@@ -1,0 +1,28 @@
+<mat-card class="task-card" (click)="onCardClick()">
+  <mat-card-content>
+    <div class="card-header">
+      <span class="status-dot" [class]="task().status"></span>
+      <span class="priority-badge" [class]="priorityClass">
+        {{ task().priority }}
+      </span>
+    </div>
+
+    <h3 class="task-title" [class.done]="task().status === 'done'">
+      {{ task().title }}
+    </h3>
+
+    <p class="task-desc">{{ task().description }}</p>
+
+    <div class="card-footer">
+      <span class="due-date">
+        <mat-icon>calendar_today</mat-icon>
+        {{ task().dueDate | date: 'mediumDate' }}
+      </span>
+      <div class="tags">
+        @for (tag of task().tags; track tag) {
+          <mat-chip>{{ tag }}</mat-chip>
+        }
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

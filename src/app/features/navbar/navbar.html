@@ -1,0 +1,17 @@
+<div class="navbar">
+<mat-toolbar color="primary">
+    <mat-icon>task</mat-icon>
+  <span>Task Manager</span>
+  <span class="spacer"></span>  <!-- pushes icons to right -->
+
+  <button mat-icon-button>
+    <mat-icon>search</mat-icon>
+  </button>
+
+  <button mat-icon-button
+          [matBadge]="notifCount"
+          matBadgeColor="warn">
+    <mat-icon>notifications</mat-icon>
+  </button>
+</mat-toolbar>
+</div>

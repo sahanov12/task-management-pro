@@ -1,0 +1,56 @@
+<div class="nav-bar">
+    <button mat-icon-button routerLink="/tasks">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h3>Task Detail</h3>
+</div>
+
+<div class="task-detail">
+<form class="task-form" [formGroup]="taskDetailForm" (ngSubmit)="onSubmit()">
+    <label>Title</label>
+    <mat-form-field appearance="outline">
+        <input matInput formControlName="title" placeholder="Enter task title" />
+    </mat-form-field>
+
+    <label>Description</label>
+    <mat-form-field appearance="fill">
+        <textarea matInput formControlName="description" placeholder="Enter task description"></textarea>
+    </mat-form-field>
+
+    <label>Status</label>
+    <mat-form-field appearance="fill">
+        <mat-select formControlName="status">
+            <mat-option value="in-progress">In Progress</mat-option>
+            <mat-option value="completed">Completed</mat-option>
+            <mat-option value="pending">Pending</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <label>Priority</label>
+    <mat-form-field appearance="fill">
+        <mat-select formControlName="priority">
+            <mat-option value="low">Low</mat-option>
+            <mat-option value="medium">Medium</mat-option>
+            <mat-option value="high">High</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <label>Due Date</label>
+    <mat-form-field appearance="fill">
+        <input matInput formControlName="dueDate" [matDatepicker]="picker" placeholder="Choose a date" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <label>Tags</label>
+    <mat-form-field appearance="fill">
+        <input matInput formControlName="tags" placeholder="Enter tags separated by commas" />
+    </mat-form-field>
+
+    <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit">Save</button>
+        <button mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+    </div>
+
+</form>
+</div>
