@@ -28,13 +28,14 @@ ngOnInit() {
     month: 'long',
     day: 'numeric'
   });
+  this.taskService.getTasks();
 }
 
  onFilterChange(filter: TaskStatus | 'all') {
     this.taskService.activeFilter.set(filter);
   }
 
-    onTaskClicked(task: Task) {
+ onTaskClicked(task: Task) {
     this.router.navigate(['/task', task.id]);
   }
 

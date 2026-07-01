@@ -58,18 +58,29 @@ onSubmit() {
   if (this.taskDetailForm.valid) {
     const task: Task = this.taskDetailForm.value;
     const id = this.route.snapshot.paramMap.get('id');
-    const tags = this.taskDetailForm.value.tags
-  .split(',')
-  .map((t: string) => t.trim());
-   task.tags = tags;
+    console.log('Form submitted with task:', task, 'and id:', id);
+    
     if (id === 'new') {
-     this.taskService.addTask(task);
-      this.openToast('Task added successfully!', true); // Show toast notification for addition
-      this.router.navigate(['/tasks']); // Navigate back to home after update
-    } else {
-      this.taskService.updateTask(task);
-      this.openToast('Task updated successfully!', true); // Show toast notification for update
-      this.router.navigate(['/tasks']); // Navigate back to home after update
+     this.taskService.createTask(task).subscribe({
+        next: (createdTask) => {
+          this.openToast('Task added successfully!', true);
+          this.router.navigate(['/tasks']);
+        },
+        error: (err) => {
+          this.openToast('Failed to add task!', false);
+        }
+      });
+    } else if (id) {
+      task.id = id || undefined; // Ensure the task has the correct id
+      this.taskService.updateTask(task).subscribe({
+        next: (updatedTask) => {
+          this.openToast('Task updated successfully!', true);
+          this.router.navigate(['/tasks']);
+        },
+        error: (err) => {
+          this.openToast('Failed to update task!', false);
+        }
+      });
     }
   }
 }
@@ -84,10 +95,15 @@ openToast(message: string, success: boolean) {
   }
 
   onDelete() {
-    this.taskService.deleteTask(this.route.snapshot.paramMap.get('id')!);
-    this.openToast('Task deleted successfully!', false);
-    this.router.navigate(['/tasks']);
+    this.taskService.deleteTask(this.route.snapshot.paramMap.get('id')!).subscribe({
+      next: () => {
+        this.openToast('Task deleted successfully!', true);
+        this.router.navigate(['/tasks']);
+      },
+      error: () => {
+        this.openToast('Failed to delete task!', false);
+      }
+    });
   }
-
 
 }

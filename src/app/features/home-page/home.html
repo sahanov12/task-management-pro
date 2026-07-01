@@ -33,24 +33,27 @@
         <mat-button-toggle-group [value]="taskService.activeFilter()" (change)="onFilterChange($event.value)">
             <mat-button-toggle value="all">All</mat-button-toggle>
             <mat-button-toggle value="todo">Todo</mat-button-toggle>
-            <mat-button-toggle value="in-progress">In progress</mat-button-toggle>
+            <mat-button-toggle value="progress">Progress</mat-button-toggle>
             <mat-button-toggle value="done">Done</mat-button-toggle>
         </mat-button-toggle-group>
     </div>
 
     <!-- ✦ Task list — @for and @if (new Angular control flow) -->
-  <div class="task-list">
-    @if (taskService.filteredTasks().length === 0) {
-      <div class="empty-state">
-        <mat-icon>check_circle</mat-icon>
-        <p>No tasks here!</p>
-      </div>
-    } @else {
-      @for (task of taskService.filteredTasks(); track task.id) {
-        <app-task-card
-          [task]="task"
-          (taskClicked)="onTaskClicked($event)" />
-      }
-    }
-  </div>
+    <div class="task-list">
+        @if (taskService.loading()) {
+        <p>Loading tasks...</p>
+        }
+        @if (taskService.error()) {
+        <p>{{ taskService.error() }}</p>
+        }
+        @for (task of taskService.filteredTasks(); track task.id) {
+        <app-task-card [task]="task" (taskClicked)="onTaskClicked($event)" />
+        }
+         @if (taskService.filteredTasks().length === 0 && !taskService.loading() && !taskService.error()) {
+        <div class="empty-state">
+            <mat-icon>check_circle</mat-icon>
+            <p>No tasks here!</p>
+        </div>
+        }
+    </div>
 </div>

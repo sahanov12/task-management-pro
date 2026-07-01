@@ -1,22 +1,50 @@
-import { computed, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { Observable } from "rxjs";
 import { Task, TaskStatus } from "../models/task";
+import { environment } from "../../environments/environment";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class TaskService {
+  http = inject(HttpClient);
+  private apiUrl = environment.apiBaseUrl;
 
-    // ✦ Core signal — single source of truth
-  private tasks = signal<Task[]>([
-    { id: '1', title: 'Set up Angular signal store', 
-      description: 'Create TaskService using signal() and computed()', 
-      status: 'in-progress', priority: 'high', dueDate: '2026-06-28', tags: ['Angular', 'Signals'] },
-    { id: '2', title: 'Build TaskCard standalone component', description: 'Standalone component with no NgModule', status: 'todo', priority: 'medium', dueDate: '2026-06-29', tags: ['Angular'] },
-    { id: '3', title: 'Create GitHub repo and push', description: 'Init repo and push initial commit', status: 'done', priority: 'low', dueDate: '2026-06-27', tags: ['GitHub'] },
-    { id: '4', title: 'Configure lazy-loaded routes', description: 'Set up loadComponent() routing', status: 'in-progress', priority: 'high', dueDate: '2026-06-30', tags: ['Angular'] },
-  ]);
+  // signals
+  tasks = signal<Task[]>([]);
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
+
+  getTasks(): void {
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.http.get<Task[]>(`${this.apiUrl}/getTasks`).subscribe({
+      next: (tasks) => {
+        console.log('Fetched tasks:', tasks);
+        this.tasks.set(tasks);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set('Failed to load tasks');
+        this.loading.set(false);
+      }
+    });
+  }
+
+  createTask(task: Task): Observable<Task> {
+    return this.http.post<Task>(`${this.apiUrl}/createTasks`, task);
+  }
+
+  deleteTask(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/deleteTasks`, { params: { id } });
+  }
+
+  updateTask(task: Task): Observable<Task> {
+    return this.http.put<Task>(`${this.apiUrl}/updateTasks`, task);
+  }
     // ✦ Active filter signal
   activeFilter = signal<TaskStatus | 'all'>('all');
 
@@ -29,7 +57,7 @@ export class TaskService {
 
   // ✦ Stats — all derived, never manually tracked
   totalCount    = computed(() => this.tasks().length);
-  inProgressCount = computed(() => this.tasks().filter(t => t.status === 'in-progress').length);
+  inProgressCount = computed(() => this.tasks().filter(t => t.status === 'progress').length);
   doneCount     = computed(() => this.tasks().filter(t => t.status === 'done').length);
   todoCount  = computed(() =>  this.tasks().filter(t => t.status === 'todo').length);
 
@@ -39,13 +67,9 @@ export class TaskService {
     this.tasks.update(tasks => [...tasks, task]);
   }
 
-  updateTask(updated: Task) {
-    this.tasks.update(tasks => tasks.map(t => t.id === updated.id ? updated : t));
-  }
-
-  deleteTask(id: string) {
-    this.tasks.update(tasks => tasks.filter(t => t.id !== id));
-  }
+  // updateTask(updated: Task) {
+  //   this.tasks.update(tasks => tasks.map(t => t.id === updated.id ? updated : t));
+  // }
 
   getTaskById(id: string): Task | undefined {
     return this.tasks().find(t => t.id === id);

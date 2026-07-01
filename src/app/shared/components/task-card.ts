@@ -24,13 +24,13 @@ export class TaskCardComponent {
   }
 
   get priorityClass() {
-    return `priority-${this.task().priority}`;
+    return `priority-${this.task().priority.toLowerCase()}`;
   }
 
   get statusLabel() {
     const map: Record<string, string> = {
       'todo': 'Todo',
-      'in-progress': 'In progress',
+      'progress': 'Progress',
       'done': 'Done'
     };
     return map[this.task().status];
