@@ -32,9 +32,9 @@
     <div class="filter-group">
         <mat-button-toggle-group [value]="taskService.activeFilter()" (change)="onFilterChange($event.value)">
             <mat-button-toggle value="all">All</mat-button-toggle>
-            <mat-button-toggle value="todo">Todo</mat-button-toggle>
+            <mat-button-toggle value="pending">Todo</mat-button-toggle>
             <mat-button-toggle value="progress">Progress</mat-button-toggle>
-            <mat-button-toggle value="done">Done</mat-button-toggle>
+            <mat-button-toggle value="completed">Done</mat-button-toggle>
         </mat-button-toggle-group>
     </div>
 

@@ -58,8 +58,8 @@ export class TaskService {
   // ✦ Stats — all derived, never manually tracked
   totalCount    = computed(() => this.tasks().length);
   inProgressCount = computed(() => this.tasks().filter(t => t.status === 'progress').length);
-  doneCount     = computed(() => this.tasks().filter(t => t.status === 'done').length);
-  todoCount  = computed(() =>  this.tasks().filter(t => t.status === 'todo').length);
+  doneCount     = computed(() => this.tasks().filter(t => t.status === 'completed').length);
+  todoCount  = computed(() =>  this.tasks().filter(t => t.status === 'pending').length);
 
   // ✦ Mutate the signal
   addTask(task: Task) {

@@ -1,4 +1,4 @@
-export type TaskStatus = 'todo' | 'progress' | 'done';
+export type TaskStatus = 'completed' | 'progress' | 'pending';
 export type TaskPriority = 'high' | 'medium' | 'low';
 
 export interface Task {
