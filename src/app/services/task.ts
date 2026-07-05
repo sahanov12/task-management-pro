@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, tap } from "rxjs";
 import { Task, TaskStatus } from "../models/task";
 import { environment } from "../../environments/environment";
 import { HttpClient } from "@angular/common/http";
@@ -24,7 +24,8 @@ export class TaskService {
     this.http.get<Task[]>(`${this.apiUrl}/getTasks`).subscribe({
       next: (tasks) => {
         console.log('Fetched tasks:', tasks);
-        this.tasks.set(tasks);
+        const filteredTasks = tasks.filter(task => task.type === 'task'); // Replace 'user123' with the actual user ID
+        this.tasks.set(filteredTasks);
         this.loading.set(false);
       },
       error: (err) => {
@@ -35,15 +36,29 @@ export class TaskService {
   }
 
   createTask(task: Task): Observable<Task> {
-    return this.http.post<Task>(`${this.apiUrl}/createTasks`, task);
+    return this.http.post<Task>(`${this.apiUrl}/createTasks`, task).pipe(
+      tap((createdTask) => {
+        this.tasks.update((tasks) => [...tasks, createdTask]);
+      })
+    );
   }
 
   deleteTask(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/deleteTasks`, { params: { id } });
+    return this.http.delete<void>(`${this.apiUrl}/deleteTasks/${id}`).pipe(
+      tap(() => {
+        this.tasks.update((tasks) => tasks.filter((task) => task.id !== id));
+      })
+    );
   }
 
   updateTask(task: Task): Observable<Task> {
-    return this.http.put<Task>(`${this.apiUrl}/updateTasks`, task);
+    return this.http.put<Task>(`${this.apiUrl}/updateTasks`, task).pipe(
+      tap((updatedTask) => {
+        this.tasks.update((tasks) =>
+          tasks.map((currentTask) => (currentTask.id === updatedTask.id ? updatedTask : currentTask))
+        );
+      })
+    );
   }
     // ✦ Active filter signal
   activeFilter = signal<TaskStatus | 'all'>('all');

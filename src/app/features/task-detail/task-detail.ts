@@ -13,6 +13,7 @@ import { Task } from '../../models/task';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TaskService } from '../../services/task';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-task-detail',
@@ -26,6 +27,7 @@ export class TaskDetail implements OnInit {
 route = inject(ActivatedRoute);
 taskService = inject(TaskService);
 snackBar = inject(MatSnackBar);
+authService = inject(AuthService);
 fb = inject(FormBuilder);
 router = inject(Router);
 taskDetailForm!: FormGroup;
@@ -56,10 +58,23 @@ ngOnInit() {
 
 onSubmit() {
   if (this.taskDetailForm.valid) {
-    const task: Task = this.taskDetailForm.value;
+    const formValue = this.taskDetailForm.value;
+    const rawTags = formValue.tags;
+    const tags = Array.isArray(rawTags)
+      ? rawTags
+      : typeof rawTags === 'string'
+        ? rawTags.split(',').map(tag => tag.trim()).filter(Boolean)
+        : [];
+
+    const task: Task = {
+      ...formValue,
+      type: 'task',
+      tags
+    } as Task;
+
     const id = this.route.snapshot.paramMap.get('id');
     console.log('Form submitted with task:', task, 'and id:', id);
-    
+
     if (id === 'new') {
      this.taskService.createTask(task).subscribe({
         next: (createdTask) => {

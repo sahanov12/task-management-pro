@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-navbar',
@@ -12,4 +14,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class Navbar {
   notifCount = 5;
+  router = inject(Router);
+  authService = inject(AuthService);
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }

@@ -1,0 +1,64 @@
+<div class="app-title">
+  <h3>Task Manager</h3>
+  <button mat-raised-button color="primary" (click)="navigateToSignIn()" aria-label="Sign In">
+    Sign in
+  </button>
+</div>
+
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" required>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" type="password" required>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button class="login-button" color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="modal-backdrop" *ngIf="showSignInModal" (click)="closeSignInModal()">
+  <div class="sign-in-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <h3>Sign In</h3>
+    <form [formGroup]="signInForm" (ngSubmit)="onRegisterSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" required>
+      </mat-form-field>
+
+      <div class="modal-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="signInForm.invalid">Submit</button>
+        <button mat-stroked-button type="button" (click)="closeSignInModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
